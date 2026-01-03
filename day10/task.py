@@ -1,4 +1,4 @@
-def open_data(path='test.txt'):
+def open_data(path='input.txt'):
     with open(path, 'r') as f:
         reader = f.read().splitlines()
     lights = []
@@ -49,10 +49,10 @@ def sum2list(lst1, lst2):
 def get_min_combinations(light, wirings):
     combinations = []
     def get_combination(light, wirings, combination, total_sum):
-        if not wirings:
-            return
         if light == total_sum:
             combinations.append(combination.copy())
+            return
+        if not wirings:
             return
         n = len(wirings)
         for i in range(n):
@@ -65,14 +65,20 @@ def get_min_combinations(light, wirings):
 
     get_combination(light, wirings, [], total_sum)
     combinations.sort(key=lambda x: len(x))
-    print('--------')
-    print(light)
-    print(combinations)
+#    print('--------')
+#    print(light)
+#    print(combinations)
     return len(combinations[0]) if combinations else 0
 
 data = open_data()
 acc = 0
-
+#machine = data[1]
+#light = machine['light']
+#wirings = machine['wiring']
+#print('wirings')
+#print(wirings)
+#min_value = get_min_combinations(light, wirings)
+#print(min_value)
 for machine in data:
     light = machine['light']
     wirings = machine['wiring']
