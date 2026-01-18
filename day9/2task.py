@@ -98,28 +98,26 @@ def get_vs(p1,p2):
 
 def intersection(xm, xM, ym, yM, borders):
     for border in borders:
-        # check if border is vertical
         p1, p2 = border
         x1, y1 = p1
         x2, y2 = p2
         ys = sorted((y1,y2))
         xs = sorted((x1,x2))
-
+        c = 0
+        # check if border is vertical
         if x1 == x2:
             if xm<x1<xM:
                 if ys[0]<ym<ys[1]:
-                    return True
+                    c += 1
                 if ys[0]<yM<ys[1]:
-                    return True
+                    c += 1
         if y1==y2:
             if ym<y1<yM:
                 if xs[0]<xm<xs[1]:
-                    return True
+                    c += 1
                 if xs[0]<xM<xs[1]:
-                    return True
-    return False
-
-
+                    c += 1
+    return not c%2==0 
 
 n = len(data)
 A = 0
