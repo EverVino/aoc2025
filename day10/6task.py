@@ -100,8 +100,12 @@ def solve_with_parameters(variables, expanded_matrix):
 
     return min_sum
 
-def get_min_value(light, wirings):
-    n = light.shape[0]
+def get_min_value(i, light, wirings):
+    no_sum = [20, 30, 92, 105, 114]
+    no_process = [7, 41, 47, 73, 102]
+    if i in (no_sum + no_process):
+        return i, 0 
+
     variables = wirings.shape[0]
 
     A = wirings.T
@@ -114,7 +118,7 @@ def get_min_value(light, wirings):
 
     Mf = Mnp[mask,:]
 
-    return solve_with_parameters(variables, Mf)
+    return i, solve_with_parameters(variables, Mf)
 
 data = open_data()
 #acc = 0
@@ -124,15 +128,15 @@ data = open_data()
 #value = get_min_value(light, wirings)
 #print(value)
 
-acc = 0
-no_process = [7, 41, 47, 73, 102]
-no_sum = [20, 30, 92, 105, 114]
-for i, machine in enumerate(data):
-    if i in no_process + no_sum:
-        continue
-    light = machine['joltage']
-    wirings = machine['wiring']
-    min_value = get_min_value(light, wirings)
-    print(i, min_value)
-    acc += min_value
-print(acc)
+from joblib import Parallel, delayed, parallel_backend
+
+total = 0
+with parallel_backend('loky', n_jobs=19):
+    for result in Parallel(return_as='generator')(
+            delayed(get_min_value)(i, machine['joltage'], machine['wiring']) for i, machine in enumerate(data)
+            ):
+        total += result[1]
+
+        print(result[0], result[1])
+
+print(total)
